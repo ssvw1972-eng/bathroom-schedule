@@ -111,37 +111,38 @@ def oak(name):
     m = make_mat(name, (0.32, 0.20, 0.11), rough=0.55, metal=0.0)
     nt = m.node_tree
     bsdf = nt.nodes.get("Principled BSDF")
-    wave = nt.nodes.new("ShaderNodeTexWave")
-    wave.wave_type = 'BANDS'
-    wave.inputs["Scale"].default_value = 8.0
-    wave.inputs["Distortion"].default_value = 1.2
-    wave.inputs["Detail"].default_value = 4.0
+    grain = nt.nodes.new("ShaderNodeTexNoise")
+    grain.name = "OakGrain"
+    grain.inputs["Scale"].default_value = 5.0
+    grain.inputs["Detail"].default_value = 6.0
+    grain.inputs["Roughness"].default_value = 0.55
     mapping = nt.nodes.new("ShaderNodeMapping")
     texcoord = nt.nodes.new("ShaderNodeTexCoord")
-    mapping.inputs["Scale"].default_value = (0.35, 3.5, 1.0)
+    mapping.inputs["Scale"].default_value = (1.4, 1.4, 8.0)
     mix = nt.nodes.new("ShaderNodeMix")
     mix.data_type = 'RGBA'
-    mix.inputs["A"].default_value = (0.28, 0.17, 0.09, 1)
-    mix.inputs["B"].default_value = (0.40, 0.26, 0.14, 1)
+    # Linear values around the smoked-oak chip #5A3F27. Kept close so the face stays one timber.
+    mix.inputs["A"].default_value = (0.090, 0.043, 0.020, 1)
+    mix.inputs["B"].default_value = (0.133, 0.064, 0.027, 1)
     nt.links.new(texcoord.outputs["Object"], mapping.inputs["Vector"])
-    nt.links.new(mapping.outputs["Vector"], wave.inputs["Vector"])
-    nt.links.new(wave.outputs["Fac"], mix.inputs["Factor"])
+    nt.links.new(mapping.outputs["Vector"], grain.inputs["Vector"])
+    nt.links.new(grain.outputs["Fac"], mix.inputs["Factor"])
     nt.links.new(mix.outputs["Result"], bsdf.inputs["Base Color"])
     return m
 
-trav = travertine("Travertine", (0.72, 0.64, 0.50), 14.0, 0.22)
-trav_dark = travertine("TravertineTrough", (0.55, 0.48, 0.36), 22.0, 0.12)
-plaster = travertine("Plaster", (0.86, 0.80, 0.70), 6.0, 0.04)
+trav = travertine("Travertine", (0.78, 0.68, 0.58), 14.0, 0.0)
+trav_dark = travertine("TravertineTrough", (0.48, 0.40, 0.32), 22.0, 0.0)
+plaster = travertine("Plaster", (0.55, 0.46, 0.38), 6.0, 0.0)
 wood = oak("SmokedOak")
-bronze = make_mat("Bronze", (0.52, 0.30, 0.13), rough=0.38, metal=1.0)
-bronze_dark = make_mat("BronzeDark", (0.32, 0.18, 0.08), rough=0.46, metal=1.0)
+bronze = make_mat("Bronze", (0.294, 0.133, 0.047), rough=0.46, metal=1.0)
+bronze_dark = make_mat("BronzeDark", (0.107, 0.047, 0.017), rough=0.55, metal=1.0)
 ceramic = make_mat("Ceramic", (0.92, 0.91, 0.88), rough=0.18, metal=0.0)
 mirror_mat = make_mat("Mirror", (0.85, 0.84, 0.80), rough=0.02, metal=1.0)
-leaf = make_mat("Leaf", (0.28, 0.38, 0.20), rough=0.55)
-leaf_dark = make_mat("LeafDark", (0.16, 0.24, 0.12), rough=0.6)
-clay = travertine("Clay", (0.45, 0.32, 0.22), 30.0, 0.08)
+leaf = make_mat("Leaf", (0.073, 0.107, 0.033), rough=0.6)
+leaf_dark = make_mat("LeafDark", (0.027, 0.047, 0.013), rough=0.65)
+clay = travertine("Clay", (0.38, 0.23, 0.13), 30.0, 0.035)
 water = make_mat("Water", (0.55, 0.58, 0.55), rough=0.04, metal=0.0, transmission=0.85)
-glow = make_mat("Glow", (1.0, 0.78, 0.50), rough=0.4, emit=2.2, emit_color=(1.0, 0.72, 0.42))
+glow = make_mat("Glow", (1.0, 0.90, 0.78), rough=0.4, emit=1.3, emit_color=(1.0, 0.90, 0.78))
 gap = make_mat("ShadowGap", (0.08, 0.07, 0.06), rough=0.8)
 metal_soft = make_mat("SoftMetal", (0.55, 0.52, 0.46), rough=0.35, metal=1.0)
 
@@ -301,7 +302,7 @@ cyl("TowelRoseB", L - 0.02, 1.34, 1.20, 0.016, 0.02, bronze, rot=(0, math.pi / 2
 cyl("HookDoor", 0.08, door_y1 + 0.12, 1.55, 0.008, 0.045, bronze, rot=(0, math.pi / 2, 0))
 
 # ---------- lights ----------
-def area(name, loc, target, energy, size, color=(1.0, 0.82, 0.62)):
+def area(name, loc, target, energy, size, color=(1.0, 0.96, 0.91)):
     light_data = bpy.data.lights.new(name, 'AREA')
     light_data.energy = energy
     light_data.size = size
@@ -312,19 +313,19 @@ def area(name, loc, target, energy, size, color=(1.0, 0.82, 0.62)):
     look_at(obj, target)
     return obj
 
-area("Fill", (L / 2, W / 2, H - 0.15), (L / 2, W / 2, 0.8), 40, 1.6)
-area("SpotVanity", (L / 2, 0.85, H - 0.05), (L / 2, 0.3, 1.2), 18, 0.18)
-area("SpotWalk", (1.55, 1.15, H - 0.05), (1.55, 1.15, 0.5), 14, 0.16)
-area("SpotShower", (rose_x, rose_y, H - 0.02), (rose_x, rose_y, 1.0), 16, 0.16)
-area("SpotWC", (wc_x, W - 0.6, H - 0.05), (wc_x, W - 0.4, 0.6), 10, 0.14)
-area("FromDressing", (-0.55, (door_y0 + door_y1) / 2, 1.5), (1.2, 1.2, 1.1), 80, 0.9, (1.0, 0.86, 0.70))
+area("Fill", (L / 2, W / 2, H - 0.15), (L / 2, W / 2, 0.8), 36, 1.6)
+area("SpotVanity", (L / 2, 0.85, H - 0.05), (L / 2, 0.3, 1.2), 11, 0.18, (1.0, 0.93, 0.84))
+area("SpotWalk", (1.55, 1.15, H - 0.05), (1.55, 1.15, 0.5), 9, 0.16, (1.0, 0.93, 0.84))
+area("SpotShower", (rose_x, rose_y, H - 0.02), (rose_x, rose_y, 1.0), 9, 0.16, (1.0, 0.93, 0.84))
+area("SpotWC", (wc_x, W - 0.6, H - 0.05), (wc_x, W - 0.4, 0.6), 6, 0.14, (1.0, 0.93, 0.84))
+area("FromDressing", (-0.55, (door_y0 + door_y1) / 2, 1.5), (1.2, 1.2, 1.1), 62, 0.9, (1.0, 0.97, 0.93))
 
 world = scene.world or bpy.data.worlds.new("World")
 scene.world = world
 world.use_nodes = True
 bg = world.node_tree.nodes.get("Background")
-bg.inputs["Color"].default_value = (0.55, 0.45, 0.35, 1)
-bg.inputs["Strength"].default_value = 0.015
+bg.inputs["Color"].default_value = (0.604, 0.539, 0.448, 1)
+bg.inputs["Strength"].default_value = 0.045
 
 # ---------- cameras ----------
 def camera(name, loc, target, lens=28, ortho=None):
@@ -380,9 +381,9 @@ scene.render.engine = 'CYCLES'
 scene.cycles.samples = 80
 scene.cycles.use_denoising = True
 scene.cycles.denoiser = 'OPENIMAGEDENOISE'
-scene.view_settings.view_transform = 'Filmic'
-scene.view_settings.look = 'Medium High Contrast'
-scene.view_settings.exposure = 0.15
+scene.view_settings.view_transform = 'AgX'
+scene.view_settings.look = 'AgX - Base Contrast'
+scene.view_settings.exposure = 0.30
 scene.render.image_settings.file_format = 'PNG'
 scene.render.resolution_x = 1920
 scene.render.resolution_y = 1080
