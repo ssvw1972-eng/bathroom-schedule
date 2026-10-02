@@ -185,7 +185,7 @@ box("ToeKick", (vx0 + vx1) / 2, 0.06, 0.04, vx1 - vx0 - 0.08, 0.06, 0.08, gap)
 box("VanityRail", (vx0 + vx1) / 2, vy1 - 0.02, 0.46, 0.012, 0.02, 0.70, bronze_dark)
 
 # stone top as a frame around the trough so the spout lands in the channel
-tx0, tx1 = 0.72, 2.54          # trough 1.82 m, clear of the plant ends
+tx0, tx1 = 0.88, 2.38          # trough 1.50 m, clear of the plant ends
 ty0, ty1 = 0.14, 0.46
 tz_floor = 0.78
 # left, right, front, back lips, and the trough floor
