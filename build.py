@@ -1,4 +1,4 @@
-# Bathroom model. Clear size 10 ft 8 in x 9 ft 4 in x 9 ft 0 in.
+# Bathroom model. Clear size 10 ft 8 in x 8 ft 0 in x 9 ft 0 in.
 # Finish: Brodware Weathered Brass Organic (unlacquered living bronze).
 import math
 import bpy
@@ -6,7 +6,7 @@ import bmesh
 from mathutils import Vector
 
 L = 10 * 0.3048 + 8 * 0.0254   # 3.2512 m
-W = 9 * 0.3048 + 4 * 0.0254    # 2.8448 m
+W = 8 * 0.3048                 # 2.4384 m. The lost 16 in comes off the shower and the WC.
 H = 9 * 0.3048                 # 2.7432 m ceiling, assumed
 T = 0.10                       # wall thickness outside the clear size
 
@@ -244,7 +244,7 @@ cyl("VaseNeck", vase_x, vase_y, counter_z + top_t + 0.33, 0.032, 0.06, clay)
 foliage(vase_x, vase_y, counter_z + top_t + 0.34, 0.42, 7, 0.05)
 
 # ---------- shower, north-west ----------
-# Clear shower 5 ft 6 in wide by 4 ft 5 in deep, open to the walkway.
+# Shower 5 ft 6 in wide. Depth is whatever is left north of y = 1.50 m, about 3 ft 1 in.
 sx0, sx1 = 0.0, 1.68
 sy0, sy1 = 1.50, W
 box("ShowerFloor", (sx0 + sx1) / 2, (sy0 + sy1) / 2, 0.005, sx1 - sx0, sy1 - sy0, 0.01, trav)
