@@ -202,14 +202,16 @@ box("Water", (tx0 + tx1) / 2, (ty0 + ty1) / 2, tz_floor + 0.03, tx1 - tx0 - 0.08
 # waste
 cyl("Waste", (tx0 + tx1) / 2, (ty0 + ty1) / 2, tz_floor + 0.02, 0.028, 0.01, bronze, rot=(0, 0, 0))
 
-# wall spout, 200 mm projection, pin lever of a City Stik mixer
+# Studio Ore Chapter One 02 wall mixer. Body 55 mm, spout 196-226 mm, side lever.
 spout_x = (tx0 + tx1) / 2
 spout_z = 1.02
-cyl("Spout", spout_x, 0.10, spout_z, 0.014, 0.20, bronze, rot=(math.pi / 2, 0, 0))
-cyl("SpoutRose", spout_x, 0.012, spout_z, 0.028, 0.012, bronze, rot=(math.pi / 2, 0, 0))
-cyl("SpoutTip", spout_x, 0.20, spout_z, 0.011, 0.02, bronze, rot=(math.pi / 2, 0, 0))
-cyl("MixerPin", spout_x - 0.09, 0.045, spout_z + 0.02, 0.008, 0.07, bronze, rot=(math.pi / 2, 0, 0))
-cyl("MixerRosette", spout_x - 0.09, 0.008, spout_z, 0.022, 0.01, bronze, rot=(math.pi / 2, 0, 0))
+cyl("TapFlange", spout_x, 0.006, spout_z, 0.035, 0.010, bronze, rot=(math.pi / 2, 0, 0))
+cyl("TapBody", spout_x, 0.040, spout_z, 0.0275, 0.058, bronze, rot=(math.pi / 2, 0, 0))
+cyl("TapSpout", spout_x, 0.125, spout_z, 0.012, 0.150, bronze, rot=(math.pi / 2, 0, 0))
+ico("TapElbow", spout_x, 0.198, spout_z - 0.006, 0.014, bronze, sub=2)
+cyl("TapOutlet", spout_x, 0.208, spout_z - 0.022, 0.009, 0.028, bronze)
+cyl("TapBoss", spout_x + 0.030, 0.045, spout_z, 0.016, 0.012, bronze, rot=(0, math.pi / 2, 0))
+cyl("TapLever", spout_x + 0.052, 0.045, spout_z, 0.011, 0.046, bronze, rot=(0, math.pi / 2, 0))
 
 # mirror, full width of the counter, warm halo in the shadow gap
 mx0, mx1 = vx0, vx1
